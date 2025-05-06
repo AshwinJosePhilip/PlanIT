@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Outfit", sans-serif;
+}
+body{
+  background: #f5f5f5;
+}
+a{
+  text-decoration: none;
+  color: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+.container{ 
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+/* Custom Toast Styles */
+.Toastify__toast {
+  border-radius: 8px;
+  font-family: "Outfit", sans-serif;
+}
+
+.Toastify__toast--success {
+  background: #357a38;
+}
+
+.Toastify__toast--error {
+  background: #d32f2f;
+}
+
+.Toastify__toast--info {
+  background: #1976d2;
+}
+
+.Toastify__progress-bar {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.Toastify__toast-body {
+  font-size: 16px;
+  padding: 12px 8px;
+}
+
+.Toastify__close-button {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1;
+}
