@@ -151,7 +151,7 @@ const Events = () => {
                     />
                 ))}
             </div>
-            <div className="gallery-status" aria-live="polite" className="visually-hidden">
+            <div className="gallery-status visually-hidden" aria-live="polite">
                 Image {currentIndex + 1} of {images.length}
             </div>
         </div>

@@ -7,7 +7,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    padding: 20px;
+    padding: 80px 20px 20px; /* Increased top padding */
     position: relative;
 }
 
@@ -188,6 +188,23 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #333;
+}
+
+.register-link a {
+    color: #921a64;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 5px;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 480px) {

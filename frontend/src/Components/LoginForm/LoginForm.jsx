@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import './LoginForm.css';
+// Import images
+import i1 from '../../assets/i1.jpg';
+import i2 from '../../assets/i2.jpg';
+import i3 from '../../assets/i3.jpg';
+import i4 from '../../assets/i4.jpg';
+import i5 from '../../assets/i5.jpg';
+import i6 from '../../assets/i6.jpg';
 
 const LoginForm = () => {
   const formRef = useFocusTrap();
@@ -16,28 +23,18 @@ const LoginForm = () => {
     rememberMe: Boolean(localStorage.getItem('rememberedEmail'))
   });
   const [loading, setLoading] = useState(false);
-  const [currentImage, setCurrentImage] = useState('/src/assets/i1.jpg');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const images = [i1, i2, i3, i4, i5, i6];
 
   // Redirect if already logged in
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
 
-  const images = [
-    '/src/assets/i1.jpg',
-    '/src/assets/i2.jpg',
-    '/src/assets/i3.jpg',
-    '/src/assets/i4.jpg',
-    '/src/assets/i5.jpg',
-    '/src/assets/i6.jpg',
-  ];
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImage((prevImage) => {
-        const currentIndex = images.indexOf(prevImage);
-        return images[(currentIndex + 1) % images.length];
-      });
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -57,27 +54,19 @@ const LoginForm = () => {
 
     setLoading(true);
     try {
-      if (formData.email === 'admin@planit.com' && formData.password === 'admin123') {
-        // Handle remember me
-        if (formData.rememberMe) {
-          localStorage.setItem('rememberedEmail', formData.email);
-        } else {
-          localStorage.removeItem('rememberedEmail');
-        }
-
-        const userData = {
-          email: formData.email,
-          name: 'Admin User',
-          role: 'admin'
-        };
-        login(userData);
-        toast.success('Welcome back!');
-        navigate('/');
+      // Handle remember me
+      if (formData.rememberMe) {
+        localStorage.setItem('rememberedEmail', formData.email);
       } else {
-        toast.error('Invalid email or password');
+        localStorage.removeItem('rememberedEmail');
       }
-    } catch (err) {
-      toast.error('An error occurred. Please try again.');
+
+      const success = await login(formData.email, formData.password);
+      if (success) {
+        navigate('/');
+      }
+    } catch (error) {
+      toast.error('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -96,7 +85,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-page" style={{ backgroundImage: `url('${currentImage}')` }}>
+    <div className="login-page" style={{ backgroundImage: `url('${images[currentImageIndex]}')` }}>
       <div className="login-form-container" ref={formRef}>
         <h2 className="login-title" tabIndex="-1">Member Login</h2>
         <form onSubmit={handleSubmit} className="login-form">
@@ -142,7 +131,7 @@ const LoginForm = () => {
             </label>
           </div>
           <div className="form-submit">
-            <LoadingSpinner loading={loading} />
+            {loading && <LoadingSpinner size="small" />}
             <button 
               type="submit" 
               className="login-btn" 
@@ -151,6 +140,9 @@ const LoginForm = () => {
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
+          </div>
+          <div className="register-link">
+            Don't have an account? <Link to="/register">Sign Up</Link>
           </div>
         </form>
       </div>

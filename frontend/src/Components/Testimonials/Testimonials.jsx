@@ -19,7 +19,7 @@ const testimonials = [
     name: 'Michael Chen',
     role: 'Corporate Client',
     image: user2,
-    text: 'Organized our annual conference flawlessly. The team's expertise in corporate events is unmatched.'
+    text: 'Organized our annual conference flawlessly. The team\'s expertise in corporate events is unmatched.'
   },
   {
     id: 3,

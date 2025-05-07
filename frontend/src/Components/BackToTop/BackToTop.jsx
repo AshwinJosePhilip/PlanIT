@@ -1,24 +1,26 @@
 import { useState, useEffect } from 'react';
 import './BackToTop.css';
 
-export const BackToTop = () => {
+const BackToTop = () => {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         const toggleVisibility = () => {
-            if (window.pageYOffset > 300) {
-                setIsVisible(true);
-            } else {
-                setIsVisible(false);
-            }
+            const scrolled = document.documentElement.scrollTop || document.body.scrollTop;
+            setIsVisible(scrolled > 300);
         };
 
         window.addEventListener('scroll', toggleVisibility);
-
+        // Check initial scroll position
+        toggleVisibility();
+        
         return () => window.removeEventListener('scroll', toggleVisibility);
     }, []);
 
     const scrollToTop = () => {
+        const navbarHeight = document.querySelector('.navbar')?.offsetHeight || 0;
+        const currentPosition = document.documentElement.scrollTop || document.body.scrollTop;
+        
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
@@ -36,3 +38,5 @@ export const BackToTop = () => {
         </button>
     );
 };
+
+export default BackToTop;

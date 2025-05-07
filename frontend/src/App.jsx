@@ -15,21 +15,35 @@ import Contact from './Components/Contact/Contact';
 import Footer from './Footer/Footer';
 import Title from './Components/Title/Title';
 import LoginForm from './Components/LoginForm/LoginForm';
+import RegistrationForm from './Components/RegistrationForm/RegistrationForm';
 import BackToTop from './Components/BackToTop/BackToTop';
+import AdminDashboard from './Components/Admin/AdminDashboard';
 
 const Home = () => (
   <div className="container">
-    <Hero />
+    <div id="home">
+      <Hero />
+    </div>
     <Title subTitle="Our Program" title="What we Offer" />
-    <Programs />
+    <div id="programs">
+      <Programs />
+    </div>
     <Title subTitle="About Us" title="Who We Are" />
-    <About />
+    <div id="about">
+      <About />
+    </div>
     <Title subTitle="Gallery" title="Events that we made Perfect" />
-    <Events />
+    <div id="events">
+      <Events />
+    </div>
     <Title subTitle="Testimonial" title="Smooth Events, Happy Clients!" />
-    <Testimonials />
+    <div id="testimonials">
+      <Testimonials />
+    </div>
     <Title subTitle="Contact" title="Get in touch!" />
-    <Contact />
+    <div id="contact">
+      <Contact />
+    </div>
   </div>
 );
 
@@ -38,6 +52,18 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
+// Admin Route component
+const AdminRoute = ({ children }) => {
+  const { user, isAuthenticated } = useAuth();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  if (user?.role !== 'admin') {
+    return <Navigate to="/" replace />;
   }
   return children;
 };
@@ -51,6 +77,7 @@ const AppContent = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegistrationForm />} />
         <Route path="/events" element={<Events />} />
         <Route path="/testimonials" element={<Testimonials />} />
         
@@ -69,6 +96,16 @@ const AppContent = () => {
             <ProtectedRoute>
               <Programs />
             </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin/*"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
           }
         />
       </Routes>

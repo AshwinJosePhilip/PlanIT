@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useProgressiveImage } from '../../hooks/useProgressiveImage';
 import './Hero.css';
-import heroImage from '../../assets/hero.jpg';
-// We'll use a base64 placeholder for the low-quality image
-const lowQualityImage = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQkIh8mJCMpKCUlKCQhJiYwMDYnJx4qLTEzNio3Oi4uLy89QTQ4QjY6Ojr/2wBDAR';
+
+// Import all hero images
+import i1 from '../../assets/i1.jpg';
+import i2 from '../../assets/i2.jpg';
+import i3 from '../../assets/i3.jpg';
+import i4 from '../../assets/i4.jpg';
+import i5 from '../../assets/i5.jpg';
+import i6 from '../../assets/i6.jpg';
 
 const Hero = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
-  const { src, blur } = useProgressiveImage(lowQualityImage, heroImage);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const images = [i1, i2, i3, i4, i5, i6];
 
   useEffect(() => {
     setIsVisible(true);
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleButtonClick = () => {
@@ -29,9 +40,7 @@ const Hero = () => {
     <div 
       className="hero container" 
       style={{ 
-        backgroundImage: `url(${src})`,
-        filter: blur ? 'blur(20px)' : 'none',
-        transition: 'filter 0.3s ease-out'
+        backgroundImage: `url(${images[currentImageIndex]})`,
       }}
     >
       <div className={`hero-text ${isVisible ? 'visible' : ''}`}>

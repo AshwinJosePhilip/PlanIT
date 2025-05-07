@@ -9,6 +9,7 @@
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    transition: background-image 1s ease-in-out;
 }
 
 .hero::before {
@@ -20,8 +21,8 @@
     height: 100%;
     background: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0.7),
-        rgba(0, 0, 0, 0.3)
+        rgba(0, 0, 0, 0.75),
+        rgba(0, 0, 0, 0.5)
     );
     z-index: 1;
 }
