@@ -18,11 +18,15 @@ export const AuthProvider = ({ children }) => {
       setUser(JSON.parse(userData));
     }
     setLoading(false);
-  }, []);
-
-  const login = async (email, password) => {
+  }, []);  const login = async (email, password) => {
     try {
-      const { token, user: userData } = await api.login(email, password);
+      const response = await api.login(email, password);
+      const { token, ...userData } = response;
+      
+      if (!token || !userData._id) {
+        throw new Error('Invalid credentials');
+      }
+
       setIsAuthenticated(true);
       setUser(userData);
       localStorage.setItem('token', token);
@@ -30,7 +34,9 @@ export const AuthProvider = ({ children }) => {
       toast.success(`Welcome ${userData.name}!`);
       return true;
     } catch (error) {
-      toast.error(error.message || 'Login failed');
+      const errorMessage = error.message || 'Login failed. Please try again.';
+      toast.error(errorMessage);
+      console.error('Login error:', error);
       return false;
     }
   };

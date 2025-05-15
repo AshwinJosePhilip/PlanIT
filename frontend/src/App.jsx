@@ -18,6 +18,8 @@ import LoginForm from './Components/LoginForm/LoginForm';
 import RegistrationForm from './Components/RegistrationForm/RegistrationForm';
 import BackToTop from './Components/BackToTop/BackToTop';
 import AdminDashboard from './Components/Admin/AdminDashboard';
+import Profile from './Components/Profile/Profile';
+import WeddingServices from './Components/Programs/WeddingServices/WeddingServices';
 
 const Home = () => (
   <div className="container">
@@ -80,6 +82,7 @@ const AppContent = () => {
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/events" element={<Events />} />
         <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/programs/wedding" element={<WeddingServices />} />
         
         {/* Protected Routes */}
         <Route
@@ -98,13 +101,27 @@ const AppContent = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin Routes */}
         <Route
           path="/admin/*"
           element={
             <AdminRoute>
-              <AdminDashboard />
+              <Routes>
+                <Route path="/" element={<AdminDashboard />} />
+                <Route path="programs" element={<AdminDashboard activeTab="programs" />} />
+                <Route path="events" element={<AdminDashboard activeTab="events" />} />
+                <Route path="users" element={<AdminDashboard activeTab="users" />} />
+                <Route path="settings" element={<AdminDashboard activeTab="settings" />} />
+              </Routes>
             </AdminRoute>
           }
         />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import './Programs.css';
 import program_1 from '../../assets/programs-1.jpg';
@@ -15,7 +16,7 @@ import program_11 from '../../assets/programs-11.jpeg';
 import program_12 from '../../assets/programs-12.jpeg';
 import program_icon_3 from '../../assets/program_icon_3.jpg';
 
-const ProgramCard = ({ image, title, delay }) => {
+const ProgramCard = ({ image, title, delay, onClick }) => {
     const [ref, isVisible] = useIntersectionObserver({
         threshold: 0.2
     });
@@ -25,8 +26,11 @@ const ProgramCard = ({ image, title, delay }) => {
             ref={ref}
             className={`program ${isVisible ? 'visible' : ''}`}
             style={{ '--delay': `${delay}s` }}
-            role="article"
-            aria-label={title}
+            role="button"
+            tabIndex="0"
+            aria-label={`View ${title} services`}
+            onClick={onClick}
+            onKeyPress={(e) => e.key === 'Enter' && onClick()}
         >
             <img src={image} alt={title} />
             <div className="caption">
@@ -38,10 +42,21 @@ const ProgramCard = ({ image, title, delay }) => {
 };
 
 const Programs = () => {
+    const navigate = useNavigate();
+    
     const programs = [
-        { image: program_1, title: 'Wedding' },
-        { image: program_2, title: 'Birthday' },
-        { image: program_3, title: 'Gender Reveal' },
+        { image: program_1, title: 'Wedding', path: '/programs/wedding' },
+        { image: program_2, title: 'Birthday', path: '/programs/birthday' },
+        { image: program_3, title: 'Gender Reveal', path: '/programs/gender-reveal' },
+        { image: program_4, title: 'Bridal Shower', path: '/programs/bridal-shower' },
+        { image: program_5, title: 'Baptism', path: '/programs/baptism' },
+        { image: program_6, title: 'Bachelorette', path: '/programs/bachelorette' },
+        { image: program_7, title: 'Anniversary', path: '/programs/anniversary' },
+        { image: program_8, title: 'Corporate Meetings', path: '/programs/corporate' },
+        { image: program_9, title: 'Naming Ceremony', path: '/programs/naming-ceremony' },
+        { image: program_10, title: 'Pet Parties', path: '/programs/pet-parties' },
+        { image: program_11, title: 'College Events', path: '/programs/college-events' },
+        { image: program_12, title: 'Concerts', path: '/programs/concerts' },
         { image: program_4, title: 'Bridal Shower' },
         { image: program_5, title: 'Baptism' },
         { image: program_6, title: 'Bachelorette' },
@@ -63,6 +78,7 @@ const Programs = () => {
                             image={program.image}
                             title={program.title}
                             delay={0.1 * (rowIndex * 4 + index)}
+                            onClick={() => navigate(program.path)}
                         />
                     ))}
                 </div>

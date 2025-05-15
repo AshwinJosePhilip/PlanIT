@@ -1,0 +1,193 @@
+.program-management {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.add-program-section {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-program-section h2 {
+    color: #2c7744;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.add-program-form {
+    display: grid;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: #2c7744;
+    box-shadow: 0 0 0 2px rgba(44, 119, 68, 0.1);
+}
+
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.image-upload-container input[type="file"] {
+    padding: 10px;
+    border: 1px dashed #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.image-preview {
+    max-width: 300px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.submit-button {
+    background-color: #2c7744;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #1a4d2e;
+}
+
+.submit-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.programs-list-section {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.programs-list-section h2 {
+    color: #2c7744;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.program-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.program-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.program-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.program-details {
+    padding: 16px;
+}
+
+.program-details h3 {
+    margin: 0 0 12px 0;
+    color: #333;
+}
+
+.program-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.program-actions button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.edit-button:hover {
+    background-color: #e0e0e0;
+}
+
+.delete-button {
+    background-color: #fff5f5;
+    color: #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #ffe0e0;
+}
+
+@media (max-width: 768px) {
+    .program-management {
+        padding: 15px;
+    }
+
+    .programs-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}

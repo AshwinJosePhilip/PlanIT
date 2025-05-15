@@ -60,23 +60,42 @@ body {
     gap: 8px;
 }
 
-.profile-image {
-    width: 35px;
-    height: 35px;
+.profile-button:hover .profile-image,
+.profile-button:focus .profile-image {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(44, 119, 68, 0.3);
+}
+
+.profile-button:focus {
+    outline: none;
+}
+
+.profile-button:focus-visible {
+    outline: 2px solid #2c7744;
+    outline-offset: 2px;
     border-radius: 50%;
-    background-color: #921a64;
+}
+
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #2c7744;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 8px rgba(44, 119, 68, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .profile-image.large {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+    box-shadow: 0 4px 12px rgba(44, 119, 68, 0.25);
 }
 
 /* Profile Dropdown Styles */

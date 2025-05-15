@@ -12,9 +12,21 @@ const api = axios.create({
 export const login = async (email, password) => {
     try {
         const response = await api.post('/auth/login', { email, password });
+        if (!response.data || !response.data.token) {
+            throw new Error('Invalid response from server');
+        }
         return response.data;
     } catch (error) {
-        throw error.response?.data || { message: 'Network error occurred' };
+        if (error.response) {
+            // The request was made and the server responded with a status code outside of 2xx
+            throw error.response.data || { message: 'Authentication failed' };
+        } else if (error.request) {
+            // The request was made but no response was received
+            throw { message: 'Server not responding. Please try again later.' };
+        } else {
+            // Something happened in setting up the request
+            throw { message: error.message || 'An error occurred. Please try again.' };
+        }
     }
 };
 

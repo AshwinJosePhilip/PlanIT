@@ -25,12 +25,15 @@ const Navbar = () => {
     const scrollToSection = (sectionId) => {
         const section = document.getElementById(sectionId);
         if (section) {
-            const navbarHeight = document.querySelector('.navbar').offsetHeight;
+            const navbarHeight = document.querySelector('.navbar')?.offsetHeight || 0;
             const sectionTop = section.offsetTop - navbarHeight;
             window.scrollTo({
                 top: sectionTop,
                 behavior: 'smooth'
             });
+        } else if (window.location.pathname === '/') {
+            // If we're on the home page but section is not found yet (initial load)
+            setTimeout(() => scrollToSection(sectionId), 100);
         }
     };
 
@@ -83,7 +86,7 @@ const Navbar = () => {
                                         <i className="fas fa-calendar"></i>
                                         My Events
                                     </Link>
-                                    {user?.isAdmin && (
+                                    {user?.role === 'admin' && (
                                         <Link to="/admin" className="profile-item">
                                             <i className="fas fa-cog"></i>
                                             Admin Dashboard

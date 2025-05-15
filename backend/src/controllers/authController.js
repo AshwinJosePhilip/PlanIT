@@ -1,96 +1,85 @@
-const User = require('../models/User');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-const generateToken = (userId) => {
-    return jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: '24h' });
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    });
 };
 
-exports.register = async (req, res) => {
+// @desc    Register user
+// @route   POST /api/auth/register
+// @access  Public
+const registerUser = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password } = req.body;
 
-        if (!name || !email || !password) {
-            return res.status(400).json({ 
-                message: 'Please provide all required fields' 
-            });
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ 
-                message: 'An account with this email already exists' 
-            });
-        }
-
-        // Create new user
-        const user = new User({ name, email, password, role });
-        await user.save();
-
-        // Generate token
-        const token = generateToken(user._id);
+        const user = await User.create({
+            name,
+            email,
+            password
+        });
 
         res.status(201).json({
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            token: generateToken(user._id)
         });
     } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ 
-            message: 'Error creating account. Please try again.' 
-        });
+        res.status(400).json({ message: error.message });
     }
 };
 
-exports.login = async (req, res) => {
+// @desc    Login user
+// @route   POST /api/auth/login
+// @access  Public
+const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({ 
-                message: 'Please provide both email and password' 
-            });
-        }
-
-        // Find user
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({ 
-                message: 'Invalid email or password' 
+
+        if (user && (await user.matchPassword(password))) {
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                token: generateToken(user._id)
             });
+        } else {
+            res.status(401).json({ message: 'Invalid email or password' });
         }
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
-        // Check password
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) {
-            return res.status(401).json({ 
-                message: 'Invalid email or password' 
-            });
-        }
-
-        // Generate token
-        const token = generateToken(user._id);
-
-        res.json({
-            token,
-            user: {
-                id: user._id,
+// @desc    Get user profile
+// @route   GET /api/auth/profile
+// @access  Private
+const getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (user) {
+            res.json({
+                _id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role
-            }
-        });
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ 
-            message: 'Error logging in. Please try again.' 
-        });
+        res.status(400).json({ message: error.message });
     }
 };
+
+module.exports = { registerUser, loginUser, getUserProfile };
