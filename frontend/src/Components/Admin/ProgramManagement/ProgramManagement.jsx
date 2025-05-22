@@ -1,15 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './ProgramManagement.css';
 
 const ProgramManagement = () => {
-    const [programs, setPrograms] = useState([]);
-    const [newProgram, setNewProgram] = useState({
+    const navigate = useNavigate();
+    const [programs, setPrograms] = useState([]);    const [newProgram, setNewProgram] = useState({
         title: '',
-        image: null,
-        isActive: true
+        description: '',
+        image: null
     });
     const [imagePreview, setImagePreview] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);    
+    useEffect(() => {
+        const fetchPrograms = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/programs', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch programs');
+                }
+                const data = await response.json();
+                setPrograms(data);
+            } catch (error) {
+                console.error('Error fetching programs:', error);
+                toast.error('Failed to load programs');
+            }
+        };
+
+        fetchPrograms();
+    }, []);
+
+    const handleDelete = async (programId) => {
+        if (!window.confirm('Are you sure you want to delete this program?')) return;
+        
+        try {            
+            const token = localStorage.getItem('token');
+            const response = await fetch(`/api/programs/${programId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete program');
+            }
+
+            setPrograms(prev => prev.filter(p => p._id !== programId));
+            toast.success('Program deleted successfully!');
+        } catch (error) {
+            console.error('Error deleting program:', error);
+            toast.error(error.message || 'Failed to delete program');
+        }
+    };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -27,28 +75,36 @@ const ProgramManagement = () => {
         e.preventDefault();
         setIsLoading(true);
 
-        try {
-            const formData = new FormData();
+        try {            const formData = new FormData();
             formData.append('title', newProgram.title);
+            formData.append('description', newProgram.description);
             formData.append('image', newProgram.image);
-            formData.append('isActive', newProgram.isActive);
+            const token = localStorage.getItem('token');            const response = await fetch('/api/programs', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    // Don't set Content-Type header, let the browser set it with the boundary
+                },
+                body: formData
+            });
 
-            // TODO: Add API call to save program
+            if (!response.ok) {
+                throw new Error('Failed to create program');
+            }            const savedProgram = await response.json();
             
-            setPrograms(prev => [...prev, {
-                ...newProgram,
-                image: imagePreview // Temporary - should use response from API
-            }]);
+            setPrograms(prev => [...prev, savedProgram]);
+            toast.success('Program added successfully!');
             
             // Reset form
             setNewProgram({
                 title: '',
-                image: null,
-                isActive: true
+                description: '',
+                image: null
             });
             setImagePreview('');
         } catch (error) {
             console.error('Error adding program:', error);
+            toast.error(error.message || 'Failed to add program');
         } finally {
             setIsLoading(false);
         }
@@ -72,6 +128,18 @@ const ProgramManagement = () => {
                     </div>
 
                     <div className="form-group">
+                        <label htmlFor="description">Description</label>
+                        <textarea
+                            id="description"
+                            value={newProgram.description}
+                            onChange={(e) => setNewProgram(prev => ({ ...prev, description: e.target.value }))}
+                            placeholder="Enter program description"
+                            required
+                            rows={4}
+                        />
+                    </div>
+
+                    <div className="form-group">
                         <label htmlFor="image">Program Image</label>
                         <div className="image-upload-container">
                             <input
@@ -89,17 +157,6 @@ const ProgramManagement = () => {
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label className="checkbox-label">
-                            <input
-                                type="checkbox"
-                                checked={newProgram.isActive}
-                                onChange={(e) => setNewProgram(prev => ({ ...prev, isActive: e.target.checked }))}
-                            />
-                            Active
-                        </label>
-                    </div>
-
                     <button 
                         type="submit" 
                         className="submit-button" 
@@ -113,14 +170,30 @@ const ProgramManagement = () => {
             <section className="programs-list-section">
                 <h2>Existing Programs</h2>
                 <div className="programs-grid">
-                    {programs.map((program, index) => (
-                        <div key={index} className="program-card">
-                            <img src={program.image} alt={program.title} />
-                            <div className="program-details">
+                    {programs.map((program) => (
+                        <div key={program._id} className="program-card">
+                            <img src={program.image} alt={program.title} />                            <div className="program-details">
                                 <h3>{program.title}</h3>
+                                <p className="program-description">{program.description}</p>
                                 <div className="program-actions">
-                                    <button className="edit-button">Edit</button>
-                                    <button className="delete-button">Delete</button>
+                                    <button 
+                                        className="manage-services-button"
+                                        onClick={() => navigate(`/admin/programs/${program._id}/services`)}
+                                    >
+                                        Manage Services
+                                    </button>
+                                    <button 
+                                        className="edit-button"
+                                        onClick={() => navigate(`/admin/programs/${program._id}/edit`)}
+                                    >
+                                        Edit
+                                    </button>
+                                    <button 
+                                        className="delete-button" 
+                                        onClick={() => handleDelete(program._id)}
+                                    >
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
                         </div>

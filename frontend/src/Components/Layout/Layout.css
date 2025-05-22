@@ -1,0 +1,15 @@
+@import '../../styles/variables.css';
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1 0 auto;
+    padding-top: 60px; /* Adjust based on your navbar height */
+    background-color: var(--bg-secondary);
+}
+
+/* Add more layout-specific styles here */

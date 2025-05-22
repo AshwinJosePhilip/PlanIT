@@ -3,16 +3,26 @@ const router = express.Router();
 const {
     createBooking,
     getMyBookings,
-    getOrganizerBookings,
+    getBookingById,
     updateBookingStatus,
     cancelBooking
 } = require('../controllers/bookingController');
-const { protect, organizer } = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
+const { organizer } = require('../middleware/organizerMiddleware');
 
+// Create new booking
 router.post('/', protect, createBooking);
+
+// Get all bookings for logged in user
 router.get('/my', protect, getMyBookings);
-router.get('/organizer', protect, organizer, getOrganizerBookings);
+
+// Get specific booking by ID
+router.get('/:id', protect, getBookingById);
+
+// Update booking status (admin/organizer only)
 router.put('/:id', protect, organizer, updateBookingStatus);
+
+// Cancel booking
 router.delete('/:id', protect, cancelBooking);
 
 module.exports = router;

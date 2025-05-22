@@ -1,0 +1,5 @@
+.page-container {
+    padding-top: 80px; /* Height of the navbar */
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}

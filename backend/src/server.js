@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const path = require('path');
+const fs = require('fs');
 const connectDB = require('./config/db');
 
 // Import routes
@@ -10,6 +12,7 @@ const programRoutes = require('./routes/programRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 // Connect to MongoDB
 const app = express();
@@ -20,12 +23,30 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
+// Serve static files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Create upload directories if they don't exist
+const uploadsDir = path.join(__dirname, '../uploads');
+const servicesDir = path.join(uploadsDir, 'services');
+const programsDir = path.join(uploadsDir, 'programs');
+
+[uploadsDir, servicesDir, programsDir].forEach(dir => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+});
+
+// Serve static files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/programs', programRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {

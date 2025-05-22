@@ -1,0 +1,136 @@
+.edit-program-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.edit-program-container h2 {
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.edit-program-form {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: grid;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(146, 26, 100, 0.1);
+}
+
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    min-height: 100px;
+    resize: vertical;
+}
+
+.help-text {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: -4px;
+}
+
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.image-upload-container input[type="file"] {
+    padding: 10px;
+    border: 1px dashed #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.image-preview {
+    max-width: 300px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.submit-button {
+    background-color: var(--primary);
+    color: var(--text-light);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+}
+
+.submit-button:disabled {
+    background-color: var(--primary-disabled);
+    cursor: not-allowed;
+}
+
+.cancel-button {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-button:hover {
+    background-color: #d0d0d0;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    color: #666;
+    font-size: 1.2rem;
+}

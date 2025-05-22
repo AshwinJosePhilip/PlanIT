@@ -5,28 +5,28 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './context/AuthContext';
 import ErrorBoundary from './Components/ErrorBoundary/ErrorBoundary';
-import Navbar from './Components/Navbar/Navbar';
+import Layout from './Components/Layout/Layout';
 import Hero from './Components/Hero/Hero';
-import Programs from './Components/Programs/Programs';
 import About from './Components/About/About';
 import Events from './Components/Events/Events';
 import Testimonials from './Components/Testimonials/Testimonials';
+import Programs from './Components/Programs/Programs';
 import Contact from './Components/Contact/Contact';
-import Footer from './Footer/Footer';
 import Title from './Components/Title/Title';
 import LoginForm from './Components/LoginForm/LoginForm';
 import RegistrationForm from './Components/RegistrationForm/RegistrationForm';
 import BackToTop from './Components/BackToTop/BackToTop';
 import AdminDashboard from './Components/Admin/AdminDashboard';
 import Profile from './Components/Profile/Profile';
-import WeddingServices from './Components/Programs/WeddingServices/WeddingServices';
+import ServiceManagement from './Components/Admin/Services/ServiceManagement';
+import EditProgram from './Components/Admin/Programs/EditProgram.jsx';
 
 const Home = () => (
   <div className="container">
     <div id="home">
       <Hero />
     </div>
-    <Title subTitle="Our Program" title="What we Offer" />
+    <Title subTitle="Our Programs" title="What we Offer" />
     <div id="programs">
       <Programs />
     </div>
@@ -70,89 +70,60 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
-// Layout component to handle authenticated state
+// App content with proper layout and routing
 const AppContent = () => {
   return (
     <ErrorBoundary>
-      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/register" element={<RegistrationForm />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/testimonials" element={<Testimonials />} />
-        <Route path="/programs/wedding" element={<WeddingServices />} />
-        
-        {/* Protected Routes */}
-        <Route
-          path="/contact"
-          element={
-            <ProtectedRoute>
-              <Contact />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/programs"
-          element={
-            <ProtectedRoute>
-              <Programs />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
+        <Route path="/" element={<Layout />}>
+          {/* Public routes */}
+          <Route index element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegistrationForm />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/testimonials" element={<Testimonials />} />
+          <Route path="/programs/:programId" element={<Programs />} />
+          <Route path="/contact" element={<Contact />} />
+          
+          {/* Protected routes */}
+          <Route path="/profile" element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
-          }
-        />
-
-        {/* Admin Routes */}
-        <Route
-          path="/admin/*"
-          element={
+          } />
+          
+          {/* Admin routes */}
+          <Route path="/admin/programs/:programId/services" element={
             <AdminRoute>
-              <Routes>
-                <Route path="/" element={<AdminDashboard />} />
-                <Route path="programs" element={<AdminDashboard activeTab="programs" />} />
-                <Route path="events" element={<AdminDashboard activeTab="events" />} />
-                <Route path="users" element={<AdminDashboard activeTab="users" />} />
-                <Route path="settings" element={<AdminDashboard activeTab="settings" />} />
-              </Routes>
+              <ServiceManagement />
             </AdminRoute>
-          }
-        />
+          } />
+          <Route path="/admin/programs/:programId/edit" element={
+            <AdminRoute>
+              <EditProgram />
+            </AdminRoute>
+          } />
+          <Route path="/admin/*" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          } />
+        </Route>
       </Routes>
-      <Footer />
       <BackToTop />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      <ToastContainer position="bottom-right" />
     </ErrorBoundary>
   );
 };
 
 const App = () => {
   return (
-    <ErrorBoundary>
+    <Router>
       <AuthProvider>
-        <Router>
-          <AppContent />
-        </Router>
+        <AppContent />
       </AuthProvider>
-    </ErrorBoundary>
+    </Router>
   );
 };
 

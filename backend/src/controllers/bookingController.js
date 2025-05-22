@@ -1,4 +1,5 @@
 const Booking = require('../models/bookingModel');
+const Service = require('../models/serviceModel');
 const Event = require('../models/eventModel');
 
 // @desc    Create new booking
@@ -6,26 +7,55 @@ const Event = require('../models/eventModel');
 // @access  Private
 const createBooking = async (req, res) => {
     try {
-        const { eventId, numTickets, specialRequests } = req.body;
+        const { programId, serviceId, date, time, numberOfPeople, specialRequests } = req.body;
 
-        const event = await Event.findById(eventId);
-        if (!event) {
-            return res.status(404).json({ message: 'Event not found' });
+        // Validate inputs
+        if (!date || !time || !numberOfPeople) {
+            return res.status(400).json({ message: 'Please provide all required fields' });
         }
 
-        const totalPrice = event.price * numTickets;
+        // Get service to calculate total price and validate
+        const service = await Service.findById(serviceId);
+        if (!service) {
+            return res.status(404).json({ message: 'Service not found' });
+        }
 
+        // Validate number of participants
+        if (numberOfPeople > service.maxParticipants) {
+            return res.status(400).json({ 
+                message: `Maximum ${service.maxParticipants} participants allowed` 
+            });
+        }
+
+        // Validate date is not in the past
+        const bookingDate = new Date(date);
+        if (bookingDate < new Date()) {
+            return res.status(400).json({ message: 'Cannot book for past dates' });
+        }
+
+        // Calculate total price based on number of people
+        const totalPrice = service.price * numberOfPeople;
+
+        // Create new booking
         const booking = await Booking.create({
-            event: eventId,
+            program: programId,
+            service: serviceId,
             user: req.user._id,
-            numTickets,
+            date,
+            time,
+            numberOfPeople,
+            specialRequests,
             totalPrice,
-            specialRequests
+            status: 'pending'
         });
+
+        // Populate the response with service and program details
+        await booking.populate(['service', 'program']);
 
         res.status(201).json(booking);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Booking creation error:', error);
+        res.status(400).json({ message: error.message });
     }
 };
 
@@ -35,16 +65,38 @@ const createBooking = async (req, res) => {
 const getMyBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({ user: req.user._id })
-            .populate('event')
+            .populate(['service', 'program'])
             .sort('-createdAt');
-        
         res.json(bookings);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
 };
 
-// @desc    Get organizer's event bookings
+// @desc    Get booking by ID
+// @route   GET /api/bookings/:id
+// @access  Private
+const getBookingById = async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.id)
+            .populate(['service', 'program', 'user']);
+        
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        // Check if the booking belongs to the user or if user is admin/organizer
+        if (booking.user.toString() !== req.user._id.toString() && !req.user.isAdmin && !req.user.isOrganizer) {
+            return res.status(403).json({ message: 'Not authorized' });
+        }
+
+        res.json(booking);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// @desc    Get organizer's bookings
 // @route   GET /api/bookings/organizer
 // @access  Private/Organizer
 const getOrganizerBookings = async (req, res) => {
@@ -118,6 +170,7 @@ const cancelBooking = async (req, res) => {
 module.exports = {
     createBooking,
     getMyBookings,
+    getBookingById,
     getOrganizerBookings,
     updateBookingStatus,
     cancelBooking

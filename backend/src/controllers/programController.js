@@ -32,10 +32,16 @@ const getProgramById = async (req, res) => {
 // @route   POST /api/programs
 // @access  Private/Admin
 const createProgram = async (req, res) => {
-    try {
-        const program = await Program.create(req.body);
+    try {        const programData = {
+            title: req.body.title,
+            description: req.body.description,
+            image: req.file ? `/uploads/programs/${req.file.filename}` : null
+        };
+        
+        const program = await Program.create(programData);
         res.status(201).json(program);
     } catch (error) {
+        console.error('Program creation error:', error);
         res.status(400).json({ message: error.message });
     }
 };
@@ -45,11 +51,21 @@ const createProgram = async (req, res) => {
 // @access  Private/Admin
 const updateProgram = async (req, res) => {
     try {
+        const updateData = {
+            title: req.body.title,
+            description: req.body.description,
+        };
+
+        if (req.file) {
+            updateData.image = `/uploads/programs/${req.file.filename}`;
+        }
+
         const program = await Program.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            updateData,
             { new: true, runValidators: true }
         );
+
         if (program) {
             res.json(program);
         } else {

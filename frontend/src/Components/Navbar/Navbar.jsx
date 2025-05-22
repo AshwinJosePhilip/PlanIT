@@ -48,6 +48,7 @@ const Navbar = () => {
                 <Link to="/" onClick={() => scrollToSection('home')}>HOME</Link>
                 <Link to="/#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>ABOUT</Link>
                 <Link to="/#events" onClick={(e) => { e.preventDefault(); scrollToSection('events'); }}>EVENTS</Link>
+                <Link to="/contact">CONTACT</Link>
             </div>
             <div className="navbar-center">
                 <h1>PLANIT EVENTS & SERVICES</h1>

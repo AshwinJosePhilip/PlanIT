@@ -1,9 +1,14 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-    event: {
+    program: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Event',
+        ref: 'Program',
+        required: true
+    },
+    service: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Service',
         required: true
     },
     user: {
@@ -11,7 +16,15 @@ const bookingSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    numTickets: {
+    date: {
+        type: Date,
+        required: true
+    },
+    time: {
+        type: String,
+        required: true
+    },
+    numberOfPeople: {
         type: Number,
         required: true,
         min: 1
