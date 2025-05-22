@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './Programs.css';
 
+const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    // Handle both development and production environments
+    const baseUrl = import.meta.env.PROD ? '' : 'http://localhost:5000';
+    return `${baseUrl}${imagePath}`;
+};
+
 const Programs = () => {
     const navigate = useNavigate();
     const [programs, setPrograms] = useState([]);
@@ -45,7 +52,7 @@ const Programs = () => {
                         className="program-card"
                         onClick={() => navigate(`/admin/programs/${program._id}`)}
                     >
-                        <img src={program.image} alt={program.title} />
+                        <img src={getImageUrl(program.image)} alt={program.title} />
                         <div className="program-info">
                             <h3>{program.title}</h3>
                             <p>{program.description}</p>
